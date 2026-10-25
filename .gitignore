@@ -1,0 +1,30 @@
+# Audio and database data (Strict Privacy Rule: Never commit community recordings)
+data/
+*.db
+*.sqlite3
+*.wav
+*.mp3
+*.flac
+*.m4a
+
+# Model weights
+models/
+
+# Python & Environment
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

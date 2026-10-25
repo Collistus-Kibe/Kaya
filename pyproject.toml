@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kayasearch"
+version = "0.1.0"
+description = "Search oral-history audio recordings by keyword."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "faster-whisper",
+    "rapidfuzz",
+    "streamlit",
+    "jiwer",
+    "pyyaml"
+]
+
+[project.scripts]
+kayasearch = "kayasearch.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
