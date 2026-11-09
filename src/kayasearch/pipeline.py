@@ -117,8 +117,15 @@ def run_pipeline(config: Config, transcriber: Optional[Transcriber] = None) -> D
     init_db(conn)
     
     if transcriber is None:
+        model_target = config.transcription.model_path
+        if not model_target:
+            if (config.paths.models_dir / "model.bin").exists():
+                model_target = str(config.paths.models_dir)
+            else:
+                model_target = config.transcription.model_size
+
         transcriber = FasterWhisperTranscriber(
-            model_size_or_path=config.transcription.model_path or config.transcription.model_size,
+            model_size_or_path=model_target,
             language=config.transcription.language,
             device=config.transcription.device,
             compute_type=config.transcription.compute_type,

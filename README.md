@@ -1,6 +1,6 @@
-# 🎙️ Kaya Search
+# 🌿 Kaya Search
 
-> **Privacy-first local audio search engine for oral-history recordings of Swahili and coastal dialect elder speech.**
+> **Privacy-first offline audio search engine for indexing indigenous Kaya medical knowledge & Swahili elder oral histories.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -9,11 +9,11 @@
 
 ---
 
-## 📖 Overview
+## 🎯 Case Study & Mission
 
-**Kaya Search** is a specialized, local desktop research tool designed for researchers analyzing large collections of oral-history audio recordings (~300 hours of Swahili and coastal-dialect speech from community elders).
+> *"Fatuma is a PhD student in Kwale researching indigenous Kaya medical knowledge. She has 300 hours of audio recordings—interviews with village elders who are the last keepers of knowledge about rare medicinal roots. To write her thesis, she has to manually listen to days of audio just to find a specific mention of a cure for 'Malaria.' With elders passing away and university deadlines approaching, she needs an automated indexing tool that works like Google search for audio recordings—tuned for local coastal dialects and running 100% offline to protect sacred community knowledge."*
 
-The system transcribes audio, indexes the transcripts into **SQLite FTS5**, and provides researchers with exact and fuzzy keyword search. For every match, it returns the recording name, precise timestamp, machine text excerpt, audio player at the match point, and an option to extract snippet clips.
+**Kaya Search** solves this challenge by combining local speech-to-text models (`faster-whisper`), SQLite FTS5 full-text search, and dialect-aware fuzzy matching (`rapidfuzz`) to index oral history archives into sub-second, searchable audio transcripts with exact timestamp playback.
 
 > ⚠️ **Core Philosophy**: Machine transcripts are finding aids pointing to specific places in the audio recordings. They are never presented as authoritative text. The researcher always listens to verify.
 
