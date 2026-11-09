@@ -27,14 +27,15 @@ if "reviewer_name" not in st.session_state:
 
 # Load configuration and DB connection
 def get_config_and_db():
-    config = load_config()
+    project_root = Path(__file__).resolve().parents[3]
+    config = load_config("config.yaml", project_root=project_root)
     conn = connect(config.paths.db_path, check_same_thread=False)
     init_db(conn)
     return config, conn
 
 config, conn = get_config_and_db()
 
-# Custom Styling (Scoped and Clean)
+# Custom Styling (Bespoke Sacred Kaya Theme)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700&display=swap');
@@ -96,52 +97,201 @@ st.markdown("""
         font-weight: 500;
     }
 
+    /* =================================================== */
+    /* BESPOKE SEGMENTED TAB BAR NAVIGATION                */
+    /* =================================================== */
+    div[data-baseweb="tab-list"] {
+        background: #09121f !important;
+        padding: 6px !important;
+        border-radius: 14px !important;
+        border: 1px solid rgba(16, 185, 129, 0.3) !important;
+        gap: 8px !important;
+        margin: 6px 0 24px 0 !important;
+        display: flex !important;
+        width: 100% !important;
+        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    div[data-baseweb="tab-border"],
+    div[data-baseweb="tab-highlight"] {
+        display: none !important;
+    }
+
+    button[data-baseweb="tab"] {
+        flex: 1 1 0 !important;
+        height: auto !important;
+        padding: 11px 20px !important;
+        border-radius: 10px !important;
+        background: transparent !important;
+        border: 1px solid transparent !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 0.94rem !important;
+        font-weight: 600 !important;
+        color: #94a3b8 !important;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    button[data-baseweb="tab"]:hover {
+        color: #f1f5f9 !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(52, 211, 153, 0.55) !important;
+        box-shadow: 0 4px 14px -2px rgba(5, 150, 105, 0.5) !important;
+    }
+
+    /* =================================================== */
+    /* THEME-MATCHED BUTTONS (EMERALD PRIMARY, NO RED)     */
+    /* =================================================== */
+    button[kind="primary"],
+    div.stButton > button[kind="primary"],
+    .stButton > button[type="primary"],
+    button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+        border: 1px solid rgba(52, 211, 153, 0.5) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        padding: 0.55rem 1.4rem !important;
+        box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.45) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    button[kind="primary"]:hover,
+    div.stButton > button[kind="primary"]:hover,
+    .stButton > button[type="primary"]:hover,
+    button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+        border-color: #34d399 !important;
+        box-shadow: 0 6px 20px -2px rgba(16, 185, 129, 0.65) !important;
+        transform: translateY(-1px);
+    }
+
+    /* Secondary / Topic Pill Buttons */
+    button[kind="secondary"],
+    div.stButton > button[kind="secondary"],
+    button[data-testid="baseButton-secondary"] {
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        color: #cbd5e1 !important;
+        font-weight: 500 !important;
+        font-size: 0.88rem !important;
+        transition: all 0.2s ease !important;
+    }
+
+    button[kind="secondary"]:hover,
+    div.stButton > button[kind="secondary"]:hover,
+    button[data-testid="baseButton-secondary"]:hover {
+        border-color: rgba(52, 211, 153, 0.6) !important;
+        background: rgba(16, 185, 129, 0.15) !important;
+        color: #a7f3d0 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px -2px rgba(16, 185, 129, 0.25) !important;
+    }
+
+    /* Search & Text Inputs */
+    div[data-baseweb="input"] {
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        transition: all 0.2s ease !important;
+    }
+    div[data-baseweb="input"]:focus-within {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
+    }
+
+    /* Result Card Wrapper */
+    div[data-testid="stVerticalBlockBorderWrapper"] > div {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        background: rgba(15, 23, 42, 0.45) !important;
+    }
+
     /* Badges */
     .badge-tag {
         display: inline-block;
-        padding: 3px 9px;
+        padding: 4px 10px;
         border-radius: 12px;
         font-size: 0.78rem;
         font-weight: 700;
         margin-right: 6px;
     }
-    .tag-exact { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .tag-variant { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
-    .tag-fuzzy { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-    .tag-time { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .tag-exact { background: rgba(52, 211, 153, 0.18); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.4); }
+    .tag-variant { background: rgba(96, 165, 250, 0.18); color: #93c5fd; border: 1px solid rgba(96, 165, 250, 0.4); }
+    .tag-fuzzy { background: rgba(251, 191, 36, 0.18); color: #fde047; border: 1px solid rgba(251, 191, 36, 0.4); }
+    .tag-time { background: rgba(148, 163, 184, 0.15); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.3); }
 
     /* Highlighting */
     mark.match-mark {
-        background: #fef08a;
-        color: #713f12;
-        padding: 1px 4px;
-        border-radius: 3px;
+        background: rgba(250, 204, 21, 0.28);
+        color: #fef08a;
+        border: 1px solid rgba(250, 204, 21, 0.5);
+        padding: 2px 6px;
+        border-radius: 4px;
         font-weight: 700;
     }
 
-    /* Clean Excerpt Box */
+    /* Dark Mode Compatible Excerpt Box */
     .excerpt-text {
         font-size: 1.05rem;
-        line-height: 1.6;
-        color: #1e293b;
-        background: #f8fafc;
+        line-height: 1.65;
+        color: #f1f5f9;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-left: 4px solid #10b981;
-        padding: 12px 16px;
-        border-radius: 0 8px 8px 0;
-        margin: 10px 0;
+        padding: 14px 18px;
+        border-radius: 0 10px 10px 0;
+        margin: 12px 0;
     }
 
     /* Machine notice */
     .machine-alert {
-        background: #fffbeb;
-        border: 1px solid #fef3c7;
-        color: #b45309;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        color: #fcd34d;
         font-size: 0.8rem;
         font-weight: 600;
         padding: 4px 10px;
         border-radius: 6px;
         display: inline-block;
         margin-bottom: 8px;
+    }
+
+    /* Citation Box */
+    .citation-box {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 0.83rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+        overflow-x: auto;
+    }
+    .citation-label {
+        font-weight: 700;
+        color: #34d399;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: rgba(52, 211, 153, 0.15);
+        padding: 3px 7px;
+        border-radius: 4px;
+        white-space: nowrap;
+    }
+    .citation-text {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        color: #cbd5e1;
+        word-break: break-all;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -319,7 +469,13 @@ with tabs[0]:
                     with a_col1:
                         # Quick thesis citation generator
                         citation_text = f"Kwale Kaya Oral Archive, Recording: {rec_name}, Timestamp: {timestamp_str} ({r.start_s:.1f}s). Excerpt: \"{latest_corr['corrected_text'] if latest_corr else r.text}\""
-                        st.caption(f"**Thesis Citation:** `{citation_text}`")
+                        safe_cite = html.escape(citation_text)
+                        st.markdown(f"""
+                        <div class="citation-box">
+                            <span class="citation-label">Thesis Citation</span>
+                            <span class="citation-text">{safe_cite}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
                     with a_col2:
                         clip_name = f"clip_{rec_path.stem}_{int(r.start_s)}s.wav"
                         clip_out = config.paths.work_dir / clip_name
