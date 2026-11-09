@@ -171,20 +171,20 @@ st.markdown("""
         A fast, local audio search engine for <b>Fatuma's PhD research</b> on rare medicinal roots and healing knowledge preserved by Kwale Kaya elders. Search spoken recordings for specific diseases (like Malaria) or traditional cures with instant audio playback from exact timestamps.
     </p>
     <div class="hero-pills">
-        <span class="hero-pill">🛡️ 100% Offline & Private</span>
-        <span class="hero-pill">🌳 Kwale Sacred Kayas</span>
-        <span class="hero-pill">🌱 Rare Medicinal Roots</span>
-        <span class="hero-pill">⚡ Faster-Whisper ASR</span>
-        <span class="hero-pill">🔍 SQLite FTS5 Indexed</span>
+        <span class="hero-pill">100% Offline & Private</span>
+        <span class="hero-pill">Kwale Sacred Kayas</span>
+        <span class="hero-pill">Rare Medicinal Roots</span>
+        <span class="hero-pill">Faster-Whisper ASR</span>
+        <span class="hero-pill">SQLite FTS5 Indexed</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # Main Navigation
 tabs = st.tabs([
-    "🔍 Search Elder Recordings",
-    "📖 Medical & Dialect Variants",
-    "📊 Archive Health & Ingestion"
+    "Search Elder Recordings",
+    "Medical & Dialect Variants",
+    "Archive Health & Ingestion"
 ])
 
 # ==========================================
@@ -192,15 +192,15 @@ tabs = st.tabs([
 # ==========================================
 with tabs[0]:
     # Quick Topic Filters tailored for Fatuma's thesis
-    st.markdown("##### 💡 Suggested Research Topics for Your Thesis:")
+    st.markdown("##### Suggested Research Topics for Your Thesis:")
     q_cols = st.columns(6)
     quick_topics = [
-        ("🌿 Malaria", "malaria"),
-        ("🌱 Mwarubaini", "mwarubaini"),
-        ("🍃 Mizizi ya Dawa", "mizizi"),
-        ("🤒 Homa Kali", "homa"),
-        ("🌳 Kaya Kinondo", "kinondo"),
-        ("🛖 Wazee wa Kwale", "wazee")
+        ("Malaria", "malaria"),
+        ("Mwarubaini", "mwarubaini"),
+        ("Mizizi ya Dawa", "mizizi"),
+        ("Homa Kali", "homa"),
+        ("Kaya Kinondo", "kinondo"),
+        ("Wazee wa Kwale", "wazee")
     ]
     for idx, (label, kw) in enumerate(quick_topics):
         with q_cols[idx]:
@@ -220,10 +220,10 @@ with tabs[0]:
             label_visibility="collapsed"
         )
     with c_btn:
-        search_pressed = st.button("🔍 Search", type="primary", use_container_width=True)
+        search_pressed = st.button("Search", type="primary", use_container_width=True)
 
     # Search Options
-    with st.expander("⚙️ Search Sensitivity & Settings", expanded=False):
+    with st.expander("Search Sensitivity & Settings", expanded=False):
         s_c1, s_c2, s_c3 = st.columns(3)
         with s_c1:
             enable_fuzzy = st.checkbox("Enable dialect/fuzzy matching", value=True, help="Finds similar elder pronunciations and slight spelling differences.")
@@ -259,7 +259,7 @@ with tabs[0]:
                     csv_w.writerow([Path(r.recording_path).name, f"{m:02d}:{s:02d}", r.start_s, r.end_s, r.text, r.match_type, r.confidence])
                 
                 st.download_button(
-                    label="📥 Export to CSV",
+                    label="Export to CSV",
                     data=csv_buf.getvalue(),
                     file_name=f"kwale_research_{active_q}.csv",
                     mime="text/csv",
@@ -291,19 +291,19 @@ with tabs[0]:
                     # Header row
                     col_h1, col_h2 = st.columns([3, 2])
                     with col_h1:
-                        st.markdown(f"#### 🎙️ {rec_name}")
+                        st.markdown(f"#### {rec_name}")
                     with col_h2:
                         st.markdown(f"""
                         <div style="text-align: right;">
-                            <span class="badge-tag tag-time">⏱️ {timestamp_str} ({r.start_s:.1f}s)</span>
+                            <span class="badge-tag tag-time">{timestamp_str} ({r.start_s:.1f}s)</span>
                             <span class="badge-tag {tag_class}">Match: {match_label} ({r.score:.0f}%)</span>
                         </div>
                         """, unsafe_allow_html=True)
 
                     # Required Ethics Notice & Verification Banner
-                    st.markdown("""<div class="machine-alert">⚠️ Machine-generated transcript — verify against audio before citing in thesis</div>""", unsafe_allow_html=True)
+                    st.markdown("""<div class="machine-alert">Machine-generated transcript — verify against audio before citing in thesis</div>""", unsafe_allow_html=True)
                     if latest_corr:
-                        st.success(f"✅ **Verified by {latest_corr['reviewer']}**: “{latest_corr['corrected_text']}”")
+                        st.success(f"**Verified by {latest_corr['reviewer']}**: “{latest_corr['corrected_text']}”")
 
                     # Highlighted Excerpt (Rendered Cleanly, No Raw HTML Leaks)
                     st.markdown(f"""<div class="excerpt-text">"{highlighted_html}"</div>""", unsafe_allow_html=True)
@@ -319,11 +319,11 @@ with tabs[0]:
                     with a_col1:
                         # Quick thesis citation generator
                         citation_text = f"Kwale Kaya Oral Archive, Recording: {rec_name}, Timestamp: {timestamp_str} ({r.start_s:.1f}s). Excerpt: \"{latest_corr['corrected_text'] if latest_corr else r.text}\""
-                        st.caption(f"📑 **Thesis Citation:** `{citation_text}`")
+                        st.caption(f"**Thesis Citation:** `{citation_text}`")
                     with a_col2:
                         clip_name = f"clip_{rec_path.stem}_{int(r.start_s)}s.wav"
                         clip_out = config.paths.work_dir / clip_name
-                        if st.button("✂️ Extract Audio Clip", key=f"clip_btn_{r.segment_id}", use_container_width=True):
+                        if st.button("Extract Audio Clip", key=f"clip_btn_{r.segment_id}", use_container_width=True):
                             try:
                                 start_clip = max(0.0, r.start_s - 1.0)
                                 end_clip = r.end_s + 1.5
@@ -331,7 +331,7 @@ with tabs[0]:
                                 if clip_out.exists():
                                     with open(clip_out, "rb") as f:
                                         st.download_button(
-                                            label=f"💾 Save {clip_name}",
+                                            label=f"Save {clip_name}",
                                             data=f.read(),
                                             file_name=clip_name,
                                             mime="audio/wav",
@@ -342,7 +342,7 @@ with tabs[0]:
                                 st.warning(f"Could not extract clip: {e}")
 
                     # Human Verification Expander
-                    with st.expander("✍️ Human Verification Note (Add / Edit Verified Transcript)"):
+                    with st.expander("Human Verification Note (Add / Edit Verified Transcript)"):
                         v_col1, v_col2 = st.columns([3, 1])
                         with v_col1:
                             corr_input = st.text_input(
@@ -365,18 +365,18 @@ with tabs[0]:
                                     (r.segment_id, corr_input.strip(), rev_input.strip())
                                 )
                                 conn.commit()
-                                st.toast("✅ Verified transcript saved!", icon="🌿")
+                                st.toast("Verified transcript saved!")
                                 st.rerun()
 
 # ==========================================
 # TAB 2: MEDICAL & DIALECT VARIANTS
 # ==========================================
 with tabs[1]:
-    st.subheader("📖 Kwale Dialect & Traditional Medical Synonyms")
+    st.subheader("Kwale Dialect & Traditional Medical Synonyms")
     st.caption("Elders in Kwale use coastal dialect pronunciations and local names for diseases and herbs. Define variants so searching for 'malaria' automatically finds related indigenous terms.")
 
     # One-Click Coastal Medical Presets
-    with st.expander("💡 One-Click Presets for Kaya Medical Knowledge", expanded=True):
+    with st.expander("One-Click Presets for Kaya Medical Knowledge", expanded=True):
         st.write("Add common medical and dialect pairings for Kwale research:")
         p_cols = st.columns(3)
         medical_presets = [
@@ -425,7 +425,7 @@ with tabs[1]:
             with col_vt:
                 st.markdown(f"**`{v['term']}`** ↔ **`{v['variant']}`** &nbsp; <span style='color: #64748b;'>{v['note'] or ''}</span>", unsafe_allow_html=True)
             with col_vd:
-                if st.button("🗑️ Delete", key=f"del_v_{v['id']}", use_container_width=True):
+                if st.button("Delete", key=f"del_v_{v['id']}", use_container_width=True):
                     conn.execute("DELETE FROM variants WHERE id = ?", (v['id'],))
                     conn.commit()
                     st.toast("Variant removed.")
@@ -437,7 +437,7 @@ with tabs[1]:
 # TAB 3: ARCHIVE HEALTH & INGESTION
 # ==========================================
 with tabs[2]:
-    st.subheader("📊 Archive Status & Batch Ingestion Pipeline")
+    st.subheader("Archive Status & Batch Ingestion Pipeline")
     st.caption("Monitor the status of your 300 hours of Kwale elder recordings.")
 
     # Fetch Metrics
@@ -471,11 +471,11 @@ with tabs[2]:
     st.divider()
 
     # Ingestion Trigger
-    st.markdown("##### 📁 Ingest New Field Recordings")
+    st.markdown("##### Ingest New Field Recordings")
     st.caption(f"Audio directory: `{config.paths.audio_dir}` | Local database: `{config.paths.db_path}`")
     st.write("Place your audio interview files (`.mp3`, `.wav`, `.m4a`, `.flac`) into the audio folder, then click below. Already transcribed files are automatically skipped.")
 
-    if st.button("🚀 Run / Resume Batch Ingestion", type="primary", use_container_width=True):
+    if st.button("Run / Resume Batch Ingestion", type="primary", use_container_width=True):
         with st.spinner("Transcribing and indexing elder audio recordings..."):
             stats = run_pipeline(config)
             st.success(f"Batch completed! Processed: {stats['done']}, Skipped: {stats['skipped']}, Failed: {stats['failed']}.")
