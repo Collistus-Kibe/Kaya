@@ -1,7 +1,7 @@
 import os
 import pytest
 from pathlib import Path
-from kayasearch.config import load_config
+from kayasearch.config import find_project_root, load_config
 
 def test_load_valid_config(tmp_path):
     config_yaml = """
@@ -48,3 +48,29 @@ paths:
 def test_missing_config():
     with pytest.raises(FileNotFoundError):
         load_config("nonexistent.yaml")
+
+
+def test_find_project_root_prefers_cwd_over_site_packages_hint(tmp_path, monkeypatch):
+    (tmp_path / "config.yaml").write_text("paths: {}\n")
+    fake_site_pkg = tmp_path / ".venv" / "lib" / "python3.14" / "site-packages" / "kayasearch" / "seed_demo.py"
+    fake_site_pkg.parent.mkdir(parents=True)
+    fake_site_pkg.write_text("# stub\n")
+
+    monkeypatch.chdir(tmp_path)
+    resolved = find_project_root(hint=fake_site_pkg)
+    assert resolved == tmp_path
+
+
+def test_find_project_root_walks_up_from_source_hint(tmp_path, monkeypatch):
+    project = tmp_path / "repo"
+    app_file = project / "src" / "kayasearch" / "ui" / "app.py"
+    app_file.parent.mkdir(parents=True)
+    app_file.write_text("# app\n")
+    (project / "config.yaml").write_text("paths: {}\n")
+
+    other_dir = tmp_path / "elsewhere"
+    other_dir.mkdir()
+    monkeypatch.chdir(other_dir)
+
+    resolved = find_project_root(hint=app_file)
+    assert resolved == project

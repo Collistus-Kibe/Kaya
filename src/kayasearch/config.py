@@ -37,6 +37,28 @@ class Config:
     search: SearchConfig
     privacy: PrivacyConfig
 
+def find_project_root(config_name: str = "config.yaml", hint: Optional[Path] = None) -> Path:
+    """Locate the project root containing config_name across CWD and ancestor directories."""
+    env_root = os.environ.get("KAYA_PROJECT_ROOT")
+    if env_root:
+        candidate = Path(env_root)
+        if (candidate / config_name).exists():
+            return candidate
+
+    cwd = Path.cwd()
+    if (cwd / config_name).exists():
+        return cwd
+    if (cwd / "kaya-search" / config_name).exists():
+        return cwd / "kaya-search"
+
+    for base in ([hint] if hint is not None else []) + [Path(__file__).resolve()]:
+        for parent in [base] + list(base.parents):
+            if (parent / config_name).exists():
+                return parent
+
+    return cwd
+
+
 def load_config(config_path: str = "config.yaml", project_root: Optional[Path] = None) -> Config:
     if project_root is None:
         project_root = Path.cwd()

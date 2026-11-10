@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import List, Set
 import streamlit as st
 
-from kayasearch.config import load_config
+from kayasearch.config import find_project_root, load_config
 from kayasearch.db import connect, init_db
 from kayasearch.search import search, add_variant, SearchResult
 from kayasearch.pipeline import run_pipeline
@@ -28,7 +28,7 @@ if "reviewer_name" not in st.session_state:
 
 # Load configuration and DB connection
 def get_config_and_db():
-    project_root = Path(__file__).resolve().parents[3]
+    project_root = find_project_root(hint=Path(__file__).resolve())
     config = load_config("config.yaml", project_root=project_root)
     conn = connect(config.paths.db_path, check_same_thread=False)
     init_db(conn)
@@ -427,6 +427,10 @@ with tabs[0]:
             # Render Result Cards using clean st.container(border=True)
             for idx, r in enumerate(results, 1):
                 rec_path = Path(r.recording_path)
+                if not rec_path.exists():
+                    fallback_path = config.paths.audio_dir / rec_path.name
+                    if fallback_path.exists():
+                        rec_path = fallback_path
                 rec_name = rec_path.name
                 m, s = divmod(int(r.start_s), 60)
                 timestamp_str = f"{m:02d}:{s:02d}"

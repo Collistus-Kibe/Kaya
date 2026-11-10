@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from kayasearch.audio import get_audio_duration
-from kayasearch.config import load_config
+from kayasearch.config import find_project_root, load_config
 from kayasearch.db import (
     connect,
     init_db,
@@ -102,7 +102,7 @@ def _prepare_audio_file(audio_dir: Path, entry: dict, allow_tts: bool) -> tuple[
 def seed_sample_archive(project_root: Optional[Path] = None, allow_tts: bool = False) -> None:
     """Seed Kwale Kaya medicinal roots demo archive if not already populated."""
     if project_root is None:
-        project_root = Path(__file__).resolve().parents[2]
+        project_root = find_project_root(hint=Path(__file__).resolve())
     config = load_config("config.yaml", project_root=project_root)
 
     audio_dir = config.paths.audio_dir
