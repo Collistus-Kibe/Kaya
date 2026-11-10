@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: kaya
+    runtime: python
+    plan: free
+    buildCommand: pip install . edge-tts && python -m kayasearch.seed_demo
+    startCommand: python -m streamlit run src/kayasearch/ui/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.6

@@ -11,6 +11,7 @@ from kayasearch.db import connect, init_db
 from kayasearch.search import search, add_variant, SearchResult
 from kayasearch.pipeline import run_pipeline
 from kayasearch.audio import clip_audio
+from kayasearch.seed_demo import seed_sample_archive
 
 st.set_page_config(
     page_title="Kaya Search — Kwale Indigenous Medical Knowledge Archive",
@@ -31,6 +32,11 @@ def get_config_and_db():
     config = load_config("config.yaml", project_root=project_root)
     conn = connect(config.paths.db_path, check_same_thread=False)
     init_db(conn)
+    count = conn.execute("SELECT COUNT(*) FROM recordings").fetchone()[0]
+    if count == 0:
+        conn.close()
+        seed_sample_archive(project_root=project_root, allow_tts=False)
+        conn = connect(config.paths.db_path, check_same_thread=False)
     return config, conn
 
 config, conn = get_config_and_db()
